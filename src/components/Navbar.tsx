@@ -35,9 +35,10 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-transparent">
       <div className="container mx-auto flex items-center justify-between h-16 px-6">
         {/* Logo */}
-        <a href="/" className="font-serif text-2xl font-bold text-white tracking-tight">
-          Rakhwala<span className="text-gradient-gold">.</span>
-        </a>
+        <a href="/" className="flex items-center gap-2 font-serif text-2xl font-bold text-white tracking-tight">
+  <img src="/rakhwala_logo.svg" alt="Rakhwala Logo" className="h-8 w-8 object-contain" />
+  Rakhwala<span className="text-gradient-gold">.</span>
+</a>
 
         {/* Desktop Navigation - centered */}
         <div className="hidden lg:flex items-center gap-6">
