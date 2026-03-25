@@ -33,17 +33,19 @@ interface PropertyRecord {
 // Random property images from Unsplash and Pexels
 const FALLBACK_PROPERTY_IMAGES = [
   "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80",
-  "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80",
-  "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80",
-  "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80",
-  "https://images.unsplash.com/photo-1493857671505-72967e2e2760?w=800&q=80",
-  "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80",
-  "https://images.unsplash.com/photo-1560807707-e5b63fd67d0d?w=800&q=80",
-  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
-  "https://images.unsplash.com/photo-1554995207-c18e38f9ccb9?w=800&q=80",
-  "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&q=80",
-  "https://images.unsplash.com/photo-1570129477492-45af003a37fd?w=800&q=80",
-  "https://images.unsplash.com/photo-1576876325342-ffe81ff70603?w=800&q=80",
+  "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80",
+  
+  // "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80",
+  // "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80",
+  // "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80",
+  // "https://images.unsplash.com/photo-1493857671505-72967e2e2760?w=800&q=80",
+  // "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80",
+  // "https://images.unsplash.com/photo-1560807707-e5b63fd67d0d?w=800&q=80",
+  // "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+  // "https://images.unsplash.com/photo-1554995207-c18e38f9ccb9?w=800&q=80",
+  // "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&q=80",
+  // "https://images.unsplash.com/photo-1570129477492-45af003a37fd?w=800&q=80",
+  // "https://images.unsplash.com/photo-1576876325342-ffe81ff70603?w=800&q=80",
 ];
 
 // Get a random fallback image
