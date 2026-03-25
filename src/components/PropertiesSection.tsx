@@ -32,8 +32,10 @@ interface PropertyRecord {
 
 // Random property images from Unsplash and Pexels
 const FALLBACK_PROPERTY_IMAGES = [
-  "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80",
-  "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80",
+  // "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80",
+  // "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80",
+  // "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80",
+  "https://plus.unsplash.com/premium_photo-1684338795288-097525d127f0?q=80",
   
   // "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80",
   // "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80",
