@@ -77,7 +77,7 @@ const HeroSection = () => {
               href="#valuation"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-foreground/20 bg-foreground/5 backdrop-blur-sm text-sm font-semibold text-foreground/80 hover:bg-foreground/10 transition-colors duration-300"
             >
-              Pakistan's Trusted Property Partner 🏠
+              Pakistan's Trusted Property Partner 💎
               <ArrowRight size={14} />
             </a>
           </motion.div>
