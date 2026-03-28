@@ -16,30 +16,74 @@ export const useUserProperties = () => {
     queryFn: async () => {
       if (!user) return [];
 
-      let query = supabase
-        .from('user_properties')
-        .select(`
-          *,
-          properties (*)
-        `)
-        .order('created_at', { ascending: false });
+      try {
+        let query = supabase
+          .from('user_properties')
+          .select(`
+            id,
+            user_id,
+            property_id,
+            created_at,
+            properties!inner (
+              id,
+              title,
+              location,
+              city,
+              type,
+              price,
+              price_label,
+              beds,
+              baths,
+              sqft,
+              sqft_num,
+              description,
+              image_url,
+              badge,
+              created_at
+            )
+          `)
+          .order('created_at', { ascending: false });
 
-      // If admin, get all properties, otherwise get only user's properties
-      if (!isAdmin) {
-        query = query.eq('user_id', user.id);
+        // If admin, get all properties, otherwise get only user's properties
+        if (!isAdmin) {
+          query = query.eq('user_id', user.id);
+        }
+
+        const { data, error } = await query;
+
+        if (error) {
+          console.error('Error fetching user properties:', error);
+          return [];
+        }
+
+        if (!data || data.length === 0) {
+          return [];
+        }
+
+        return data.map((userProp: any) => {
+          const prop = userProp.properties;
+          return {
+            id: prop.id,
+            title: prop.title,
+            location: prop.location,
+            city: prop.city,
+            type: prop.type,
+            price: prop.price,
+            priceLabel: prop.price_label || `PKR ${(prop.price / 10000000).toFixed(1)} Cr`,
+            beds: prop.beds || 0,
+            baths: prop.baths || 0,
+            sqft: prop.sqft || 'N/A',
+            desc: prop.description || '',
+            image_url: prop.image_url || '',
+            image: prop.image_url || '',
+            badge: prop.badge,
+            owned_at: userProp.created_at,
+          };
+        }) as UserProperty[];
+      } catch (err) {
+        console.error('Unexpected error in useUserProperties:', err);
+        return [];
       }
-
-      const { data, error } = await query;
-
-      if (error) {
-        console.error('Error fetching user properties:', error);
-        throw error;
-      }
-
-      return data.map((userProp: any) => ({
-        ...userProp.properties,
-        owned_at: userProp.created_at,
-      })) as UserProperty[];
     },
     enabled: !!user && (isSeller || isAdmin),
   });

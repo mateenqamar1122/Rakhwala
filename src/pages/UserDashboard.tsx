@@ -1,22 +1,21 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Home, 
-  Heart, 
-  FileText, 
-  Calendar, 
-  TrendingUp, 
-  User, 
-  Settings, 
+import {
+  Home,
+  Heart,
+  FileText,
+  Calendar,
+  TrendingUp,
+  User,
+  Settings,
   LogOut,
   Plus,
   Eye,
-  Edit,
-  Trash2
+  Edit
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFavorites } from '@/hooks/useFavorites';
-import { useUserProperties } from '@/hooks/useUserProperties';
+import { usePropertyManage } from '@/hooks/usePropertyManage';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
@@ -32,39 +31,39 @@ import RoleSwitcher from '@/components/RoleSwitcher';
 const UserDashboard = () => {
   const { user, profile, signOut, isBuyer, isSeller, isAdmin } = useAuth();
   const navigate = useNavigate();
-  const { favorites } = useFavorites();
-  const { userProperties } = useUserProperties();
+  const { favorites, removeFromFavorites } = useFavorites();
+  const { properties: userProperties = [] } = usePropertyManage();
   const [activeTab, setActiveTab] = useState('overview');
 
   // Fetch user's consultation requests
-  const { data: consultationRequests = [], isLoading: consultationsLoading } = useQuery({
+  const { data: consultationRequests = [] } = useQuery({
     queryKey: ['userConsultations', user?.id],
     queryFn: async () => {
       if (!user) return [];
-      
+
       const { data } = await supabase
         .from('consultation_requests')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
-      
+
       return data || [];
     },
     enabled: !!user,
   });
 
   // Fetch user's valuations
-  const { data: valuations = [], isLoading: valuationsLoading } = useQuery({
+  const { data: valuations = [] } = useQuery({
     queryKey: ['userValuations', user?.id],
     queryFn: async () => {
       if (!user) return [];
-      
+
       const { data } = await supabase
         .from('valuations')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
-      
+
       return data || [];
     },
     enabled: !!user,
@@ -83,7 +82,6 @@ const UserDashboard = () => {
     switch (profile?.current_role) {
       case 'buyer': return <Home className="w-5 h-5" />;
       case 'seller': return <TrendingUp className="w-5 h-5" />;
-      case 'admin': return <User className="w-5 h-5" />;
       default: return <User className="w-5 h-5" />;
     }
   };
@@ -92,7 +90,6 @@ const UserDashboard = () => {
     switch (profile?.current_role) {
       case 'buyer': return 'text-blue-500';
       case 'seller': return 'text-green-500';
-      case 'admin': return 'text-purple-500';
       default: return 'text-gray-500';
     }
   };
@@ -129,7 +126,7 @@ const UserDashboard = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3">
               <RoleSwitcher />
               <Button
@@ -223,16 +220,16 @@ const UserDashboard = () => {
                 <CardContent className="space-y-3">
                   {isBuyer && (
                     <>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="w-full justify-start"
                         onClick={() => navigate('/properties')}
                       >
                         <Eye className="w-4 h-4 mr-2" />
                         Browse Properties
                       </Button>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="w-full justify-start"
                         onClick={() => navigate('/valuation')}
                       >
@@ -243,41 +240,21 @@ const UserDashboard = () => {
                   )}
                   {isSeller && (
                     <>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="w-full justify-start"
                         onClick={() => navigate('/properties/new')}
                       >
                         <Plus className="w-4 h-4 mr-2" />
                         List Property
                       </Button>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="w-full justify-start"
                         onClick={() => navigate('/properties/manage')}
                       >
                         <Edit className="w-4 h-4 mr-2" />
                         Manage Properties
-                      </Button>
-                    </>
-                  )}
-                  {isAdmin && (
-                    <>
-                      <Button 
-                        variant="outline" 
-                        className="w-full justify-start"
-                        onClick={() => navigate('/admin')}
-                      >
-                        <Settings className="w-4 h-4 mr-2" />
-                        Admin Dashboard
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        className="w-full justify-start"
-                        onClick={() => navigate('/users')}
-                      >
-                        <User className="w-4 h-4 mr-2" />
-                        Manage Users
                       </Button>
                     </>
                   )}
@@ -292,16 +269,16 @@ const UserDashboard = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="w-full justify-start"
                     onClick={() => navigate('/profile')}
                   >
                     <User className="w-4 h-4 mr-2" />
                     Edit Profile
                   </Button>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="w-full justify-start"
                     onClick={() => navigate('/settings')}
                   >
@@ -330,7 +307,7 @@ const UserDashboard = () => {
                     <p className="text-muted-foreground">
                       Start browsing and save properties you're interested in!
                     </p>
-                    <Button 
+                    <Button
                       className="mt-4"
                       onClick={() => navigate('/properties')}
                     >
@@ -354,51 +331,107 @@ const UserDashboard = () => {
 
           {/* My Properties Tab */}
           <TabsContent value="properties" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Your Listed Properties</CardTitle>
-                <CardDescription>
-                  Properties you have listed for sale or rent
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {userProperties.length === 0 ? (
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h2 className="text-2xl font-bold text-foreground">Your Listed Properties</h2>
+                <p className="text-sm text-muted-foreground">Properties you have created and listed</p>
+              </div>
+              <Button
+                onClick={() => navigate('/properties/new')}
+                className="gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                List New Property
+              </Button>
+            </div>
+
+            {userProperties.length === 0 ? (
+              <Card>
+                <CardContent className="pt-12">
                   <div className="text-center py-12">
                     <Home className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                     <h3 className="text-lg font-semibold text-foreground mb-2">No properties listed</h3>
                     <p className="text-muted-foreground">
                       Start listing your properties to reach potential buyers!
                     </p>
-                    <Button 
+                    <Button
                       className="mt-4"
                       onClick={() => navigate('/properties/new')}
                     >
                       List Your First Property
                     </Button>
                   </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {userProperties.map((property) => (
-                      <div key={property.id} className="p-4 border rounded-lg">
-                        <h4 className="font-semibold text-foreground mb-2">{property.title}</h4>
-                        <p className="text-sm text-muted-foreground mb-2">{property.location}</p>
-                        <p className="text-lg font-bold text-primary">{property.priceLabel}</p>
-                        <div className="flex gap-2 mt-3">
-                          <Button size="sm" variant="outline">
-                            <Eye className="w-4 h-4 mr-1" />
-                            View
-                          </Button>
-                          <Button size="sm" variant="outline">
-                            <Edit className="w-4 h-4 mr-1" />
-                            Edit
-                          </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {userProperties.map((property: any) => (
+                  <motion.div
+                    key={property.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="overflow-hidden rounded-lg border border-border hover:border-primary/50 hover:shadow-lg transition-all"
+                  >
+                    <div className="relative h-48 bg-muted overflow-hidden">
+                      {property.image_url ? (
+                        <img
+                          src={property.image_url}
+                          alt={property.title}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
+                          <Home className="w-12 h-12 text-gray-400" />
                         </div>
+                      )}
+                      {property.badge && (
+                        <Badge className="absolute top-3 right-3 bg-primary text-primary-foreground">
+                          {property.badge}
+                        </Badge>
+                      )}
+                    </div>
+
+                    <div className="p-4">
+                      <h4 className="font-semibold text-foreground mb-1 line-clamp-2">{property.title}</h4>
+                      <p className="text-sm text-muted-foreground mb-3">{property.location}</p>
+
+                      <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
+                        {property.beds > 0 && <span>{property.beds} beds</span>}
+                        {property.baths > 0 && <span>•</span>}
+                        {property.baths > 0 && <span>{property.baths} baths</span>}
+                        {property.sqft && property.sqft !== 'N/A' && <span>•</span>}
+                        {property.sqft && property.sqft !== 'N/A' && <span>{property.sqft}</span>}
                       </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+
+                      <p className="text-lg font-bold text-primary mb-4">
+                        {property.price_label || `PKR ${(property.price / 10000000).toFixed(1)} Cr`}
+                      </p>
+
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => navigate(`/properties/${property.id}`)}
+                        >
+                          <Eye className="w-4 h-4 mr-1" />
+                          View
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => navigate('/properties/manage')}
+                        >
+                          <Edit className="w-4 h-4 mr-1" />
+                          Edit
+                        </Button>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           {/* Requests Tab */}
@@ -420,7 +453,7 @@ const UserDashboard = () => {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {consultationRequests.slice(0, 5).map((request) => (
+                      {consultationRequests.slice(0, 5).map((request: any) => (
                         <div key={request.id} className="p-3 border rounded-lg">
                           <div className="flex justify-between items-start mb-2">
                             <h4 className="font-semibold text-foreground">{request.interest}</h4>
@@ -452,7 +485,7 @@ const UserDashboard = () => {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {valuations.slice(0, 5).map((valuation) => (
+                      {valuations.slice(0, 5).map((valuation: any) => (
                         <div key={valuation.id} className="p-3 border rounded-lg">
                           <div className="flex justify-between items-start mb-2">
                             <h4 className="font-semibold text-foreground">
